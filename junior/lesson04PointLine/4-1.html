@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Point, Line in 3D world</title>
+    <script src="../../js/three.js"></script>
+    <style type="text/css">
+        div#canvas-frame {
+            border: none;
+            cursor: pointer;
+            width: 100%;;
+            height: 600px;
+            background-color: #FFFFFF;
+        }
+
+    </style>
+</head>
+<body onload="threeStart();">
+<div id="canvas-frame"></div>
+
+<script>
+    let renderer;
+    const width = document.getElementById('canvas-frame').clientWidth;
+    const height = document.getElementById('canvas-frame').clientHeight;
+    function initThree(){
+        renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setSize(width, height);
+        document.getElementById('canvas-frame').appendChild(renderer.domElement);
+        renderer.setClearColorHex(0xFFFFFF, 1);
+    }
+
+    let camera;
+    function initCamera() {
+        camera = new THREE.PerspectiveCamera(45, width/height, 1, 10000);
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = 1000;
+    }
+
+    let scene;
+    function initScene() {
+        scene = new THREE.Scene();
+    }
+
+    let light;
+    function initLight() {
+        light = new THREE.DirectionalLight(0xFF0000, 1.0);
+        light.position.set(100, 100, 200);
+        scene.add(light);
+    }
+
+    function initObject() {
+        const geometry = new THREE.Geometry();
+        const material = new THREE.LineBasicMaterial({ vertexColors: true });
+        const color1 = new THREE.Color( 0x444444 ), color2 = new THREE.Color( 0xFF0000 ), color3 = new THREE.Color( 0x00FF00 );
+
+        const p1 = new THREE.Vector3( -100, 0, 0 );
+        const p2 = new THREE.Vector3( 100, 0, 0);
+        const p3 = new THREE.Vector3( 0, -100, 0);
+        geometry.vertices.push(p1);
+        geometry.vertices.push(p2);
+
+        geometry.vertices.push(p2);
+        geometry.vertices.push(p3);
+
+        geometry.vertices.push(p3);
+        geometry.vertices.push(p1);
+
+        geometry.colors.push( color1, color2, color2, color3, color3, color1);
+
+        // const line = new THREE.Line( geometry, material, THREE.LineSegments );
+        // const line = new THREE.Line( geometry, material, THREE.LineStrip );
+        const line = new THREE.Line( geometry, material, THREE.LinePieces );
+        scene.add(line);
+    }
+
+    function render() {
+        renderer.clear();
+        renderer.render(scene, camera);
+    }
+
+    function threeStart() {
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        requestAnimationFrame(render);
+    }
+
+</script>
+</body>
+
+</html>
